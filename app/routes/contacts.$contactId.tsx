@@ -10,6 +10,9 @@ import invariant from 'tiny-invariant'
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, 'Missing contactId param')
   const contact = await getContact(params.contactId)
+  if (!contact) {
+    throw new Response('Not Found', { status: 404 })
+  }
   return json({ contact })
 }
 
@@ -85,7 +88,7 @@ export default function Contact() {
 const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, 'favorite'>
 }> = ({ contact }) => {
-  const favorite = contact.favorite
+  const favorite = contact?.favorite
 
   return (
     <Form method='post'>
